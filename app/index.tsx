@@ -4,13 +4,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Plus } from 'lucide-react-native';
 import { useSubscriptionStore } from '../src/store/useSubscriptionStore';
+import { useUserPreferencesStore } from '../src/store/useUserPreferencesStore';
 import { SubscriptionCard } from '../src/components/SubscriptionCard';
 import { DashboardHeader } from '../src/components/DashboardHeader';
+import { OnboardingModal } from '../src/components/OnboardingModal';
+import { AnalyticsChart } from '../src/components/AnalyticsChart';
 import { Subscription } from '../src/types';
+import i18n from '../src/i18n';
 
 export default function Dashboard() {
     const router = useRouter();
     const { subscriptions, deleteSubscription } = useSubscriptionStore();
+    const { currency, language } = useUserPreferencesStore(); // Subscribe to language
 
     const handleAddPress = () => {
         router.push('/add' as any);
@@ -24,6 +29,8 @@ export default function Dashboard() {
     return (
         <SafeAreaView className="flex-1 bg-slate-900 px-5">
             <DashboardHeader />
+            <AnalyticsChart />
+            <OnboardingModal />
 
             <FlatList
                 data={subscriptions}
@@ -36,8 +43,8 @@ export default function Dashboard() {
                 )}
                 ListEmptyComponent={
                     <View className="items-center mt-10">
-                        <Text className="text-slate-500 text-lg">No subscriptions yet.</Text>
-                        <Text className="text-slate-600">Tap + to track your expenses.</Text>
+                        <Text className="text-slate-500 text-lg">{i18n.t('welcome')}</Text>
+                        <Text className="text-slate-600">{i18n.t('addSubscription')} +</Text>
                     </View>
                 }
                 contentContainerStyle={{ paddingBottom: 100 }}

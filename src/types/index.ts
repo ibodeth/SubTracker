@@ -1,3 +1,5 @@
+export type Category = 'Entertainment' | 'Personal' | 'Utilities' | 'Work' | 'Other';
+
 export interface Subscription {
     id: string;
     name: string;
@@ -5,9 +7,18 @@ export interface Subscription {
     currency: string;
     billingCycle: 'weekly' | 'monthly' | 'yearly';
     startDate: string; // ISO Date String
+    category: Category;
     isFreeTrial: boolean;
-    trialEndDate?: string; // ISO Date String
+    trialEndDate?: string;
     remindMe: boolean;
-    color?: string;
-    notificationIds?: string[]; // IDs of scheduled notifications
+    cancellationUrl?: string;
+    themeColor?: string; // e.g., #E50914 for Netflix
+    notificationIds?: string[];
+}
+
+export interface UserPreferences {
+    currency: string;
+    language: string;
+    isBiometricEnabled: boolean;
+    hasCompletedOnboarding: boolean;
 }

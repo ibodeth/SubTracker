@@ -4,11 +4,16 @@ import { useEffect } from "react";
 import * as Notifications from "expo-notifications";
 import { registerForPushNotificationsAsync } from "../src/utils/notifications";
 import { useVersionCheck } from "../src/hooks/useVersionCheck";
+import { BiometricProvider } from "../src/components/BiometricProvider";
+import i18n from "../src/i18n"; // Ensure i18n is initialized
+import { useUserPreferencesStore } from "../src/store/useUserPreferencesStore";
 
 export default function RootLayout() {
+  const { language, updateExchangeRates } = useUserPreferencesStore(); // Subscribe to language
   useVersionCheck();
 
   useEffect(() => {
+    updateExchangeRates(); // Fetch latest rates
     registerForPushNotificationsAsync();
 
     // Listener for incoming notifications
@@ -20,9 +25,10 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <>
+    <BiometricProvider>
       <StatusBar style="light" />
       <Stack
+        key={language} // Force re-mount on language change
         screenOptions={{
           headerStyle: { backgroundColor: "#0f172a" },
           headerTintColor: "#fff",
@@ -35,11 +41,23 @@ export default function RootLayout() {
           name="add"
           options={{
             presentation: 'modal',
-            title: 'Add Subscription',
+            title: i18n.t('addSubscription'),
             headerBackTitle: 'Cancel'
           }}
         />
+        <Stack.Screen
+          name="subscription/[id]"
+          options={{
+            headerShown: false
+          }}
+        />
+        <Stack.Screen
+          name="settings"
+          options={{
+            headerShown: false
+          }}
+        />
       </Stack>
-    </>
+    </BiometricProvider>
   );
 }
