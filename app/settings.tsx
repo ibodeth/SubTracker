@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, Switch, TouchableOpacity, ScrollView, Alert, Modal, FlatList, Image, Linking } from 'react-native';
+import { View, Text, Switch, TouchableOpacity, ScrollView, Alert, Modal, FlatList, Image, Linking, Share, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { ArrowLeft, Globe, Lock, DollarSign, X, Github, Linkedin, Youtube, ExternalLink } from 'lucide-react-native';
 import { useUserPreferencesStore } from '../src/store/useUserPreferencesStore';
+import { useSubscriptionStore } from '../src/store/useSubscriptionStore';
 import i18n from '../src/i18n';
 import * as LocalAuthentication from 'expo-local-authentication';
 
@@ -23,15 +24,26 @@ export default function Settings() {
         setCurrency
     } = useUserPreferencesStore();
 
+    const { subscriptions, replaceSubscriptions } = useSubscriptionStore();
     const [modalVisible, setModalVisible] = useState(false);
     const [modalType, setModalType] = useState<'language' | 'currency'>('language');
+    const [restoreModalVisible, setRestoreModalVisible] = useState(false);
+    const [restoreText, setRestoreText] = useState('');
 
     const languages: SelectionOption[] = [
         { label: 'English', value: 'en' },
         { label: 'Türkçe', value: 'tr' },
         { label: 'Deutsch', value: 'de' },
         { label: 'Español', value: 'es' },
-        { label: 'Français', value: 'fr' }
+        { label: 'Français', value: 'fr' },
+        { label: 'Italiano', value: 'it' },
+        { label: 'Português', value: 'pt' },
+        { label: 'Русский', value: 'ru' },
+        { label: '中文', value: 'zh' },
+        { label: '日本語', value: 'ja' },
+        { label: '한국어', value: 'ko' },
+        { label: 'العربية', value: 'ar' },
+        { label: 'हिन्दी', value: 'hi' },
     ];
 
     const currencies: SelectionOption[] = [
@@ -41,6 +53,18 @@ export default function Settings() {
         { label: 'TRY (₺)', value: '₺' },
         { label: 'JPY (¥)', value: '¥' },
         { label: 'CNY (¥)', value: 'CN¥' },
+        { label: 'AUD ($)', value: 'A$' },
+        { label: 'CAD ($)', value: 'C$' },
+        { label: 'CHF (Fr)', value: 'Fr' },
+        { label: 'HKD ($)', value: 'HK$' },
+        { label: 'NZD ($)', value: 'NZ$' },
+        { label: 'SEK (kr)', value: 'kr' },
+        { label: 'KRW (₩)', value: '₩' },
+        { label: 'SGD ($)', value: 'S$' },
+        { label: 'INR (₹)', value: '₹' },
+        { label: 'RUB (₽)', value: '₽' },
+        { label: 'BRL (R$)', value: 'R$' },
+        { label: 'ZAR (R)', value: 'R' },
     ];
 
     const handleBiometricToggle = async (value: boolean) => {
@@ -80,6 +104,37 @@ export default function Settings() {
             setCurrency(item.value);
         }
         setModalVisible(false);
+        setModalVisible(false);
+    };
+
+    const handleBackup = async () => {
+        try {
+            const data = JSON.stringify(subscriptions, null, 2);
+            await Share.share({
+                message: data,
+                title: 'SubTracker Backup'
+            });
+        } catch (error) {
+            Alert.alert('Error', 'Backup failed');
+        }
+    };
+
+    const handleRestore = () => {
+        try {
+            const data = JSON.parse(restoreText);
+            if (Array.isArray(data)) {
+                // Basic validation: check if items look like subscriptions
+                // Ideally use zod or similar, but for now simple check
+                replaceSubscriptions(data);
+                setRestoreModalVisible(false);
+                setRestoreText('');
+                Alert.alert('Success', i18n.t('restoreSuccess'));
+            } else {
+                Alert.alert('Error', i18n.t('invalidData'));
+            }
+        } catch (error) {
+            Alert.alert('Error', i18n.t('invalidData'));
+        }
     };
 
     const renderModal = () => (
@@ -122,6 +177,44 @@ export default function Settings() {
                             </TouchableOpacity>
                         )}
                     />
+                </View>
+            </View>
+        </Modal>
+    );
+
+    const renderRestoreModal = () => (
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={restoreModalVisible}
+            onRequestClose={() => setRestoreModalVisible(false)}
+        >
+            <View className="flex-1 justify-center bg-black/80 p-5">
+                <View className="bg-slate-800 rounded-2xl p-5 border border-slate-700">
+                    <Text className="text-white text-lg font-bold mb-4">{i18n.t('restoreData')}</Text>
+                    <TextInput
+                        className="bg-slate-900 text-white p-4 rounded-xl min-h-[150px] mb-4 text-xs font-mono"
+                        multiline
+                        placeholder={i18n.t('enterJson')}
+                        placeholderTextColor="#64748b"
+                        value={restoreText}
+                        onChangeText={setRestoreText}
+                        textAlignVertical="top"
+                    />
+                    <View className="flex-row gap-4">
+                        <TouchableOpacity
+                            onPress={() => setRestoreModalVisible(false)}
+                            className="flex-1 bg-slate-700 p-3 rounded-lg items-center"
+                        >
+                            <Text className="text-white font-medium">Cancel</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleRestore}
+                            className="flex-1 bg-blue-600 p-3 rounded-lg items-center"
+                        >
+                            <Text className="text-white font-bold">Import</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         </Modal>
@@ -189,6 +282,27 @@ export default function Settings() {
                     </View>
                 </View>
 
+                {/* Data Management Section */}
+                <View className="mb-6">
+                    <Text className="text-slate-400 text-sm font-medium uppercase mb-3">{i18n.t('dataManagement')}</Text>
+                    <View className="bg-slate-800 rounded-xl overflow-hidden">
+                        <TouchableOpacity
+                            onPress={handleBackup}
+                            className="p-4 flex-row items-center border-b border-slate-700"
+                        >
+                            <Text className="text-white font-medium flex-1">{i18n.t('backupData')}</Text>
+                            <ExternalLink size={18} color="#94a3b8" />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => setRestoreModalVisible(true)}
+                            className="p-4 flex-row items-center"
+                        >
+                            <Text className="text-red-400 font-medium flex-1">{i18n.t('restoreData')}</Text>
+                            <ArrowLeft size={18} color="#f87171" style={{ transform: [{ rotate: '180deg' }] }} />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
                 {/* Developer / About Section */}
                 <View className="mb-8 mt-4">
                     <View className="items-center mb-6">
@@ -196,7 +310,7 @@ export default function Settings() {
                             <Text className="text-3xl">🚀</Text>
                         </View>
                         <Text className="text-white text-xl font-bold mb-1">Sub-Tracker</Text>
-                        <Text className="text-slate-500 text-xs">v1.0.2</Text>
+                        <Text className="text-slate-500 text-xs">v1.0.3</Text>
                     </View>
 
                     <View className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 mb-4">
@@ -234,6 +348,7 @@ export default function Settings() {
             </ScrollView>
 
             {renderModal()}
+            {renderRestoreModal()}
         </SafeAreaView>
     );
 }

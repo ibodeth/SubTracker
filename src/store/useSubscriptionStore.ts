@@ -9,6 +9,7 @@ interface SubscriptionState {
     addSubscription: (subscription: Subscription) => void;
     updateSubscription: (id: string, updatedSub: Partial<Subscription>) => void;
     deleteSubscription: (id: string) => void;
+    replaceSubscriptions: (subscriptions: Subscription[]) => void;
     getTotalMonthlyExpense: () => number;
     getTotalYearlyExpense: () => number;
 }
@@ -29,6 +30,7 @@ export const useSubscriptionStore = create<SubscriptionState>()(
                 set((state) => ({
                     subscriptions: state.subscriptions.filter((sub) => sub.id !== id),
                 })),
+            replaceSubscriptions: (subscriptions) => set({ subscriptions }),
             getTotalMonthlyExpense: () => {
                 const { subscriptions } = get();
                 const { currency: userCurrency, exchangeRates } = useUserPreferencesStore.getState();
@@ -49,8 +51,8 @@ export const useSubscriptionStore = create<SubscriptionState>()(
                     // Conversion Logic
                     const subCurrencyCode = symbolToCode[sub.currency] || 'USD';
                     if (subCurrencyCode !== userCurrencyCode) {
-                        const rateSub = exchangeRates[subCurrencyCode] || 1;
-                        const rateUser = exchangeRates[userCurrencyCode] || 1;
+                        const rateSub = (exchangeRates && exchangeRates[subCurrencyCode]) || 1;
+                        const rateUser = (exchangeRates && exchangeRates[userCurrencyCode]) || 1;
                         // Convert sub -> USD -> User
                         // PriceInUSD = Price / RateSub
                         // PriceInUser = PriceInUSD * RateUser
@@ -78,8 +80,8 @@ export const useSubscriptionStore = create<SubscriptionState>()(
                     // Conversion Logic
                     const subCurrencyCode = symbolToCode[sub.currency] || 'USD';
                     if (subCurrencyCode !== userCurrencyCode) {
-                        const rateSub = exchangeRates[subCurrencyCode] || 1;
-                        const rateUser = exchangeRates[userCurrencyCode] || 1;
+                        const rateSub = (exchangeRates && exchangeRates[subCurrencyCode]) || 1;
+                        const rateUser = (exchangeRates && exchangeRates[userCurrencyCode]) || 1;
                         yearlyCost = (yearlyCost / rateSub) * rateUser;
                     }
 

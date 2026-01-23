@@ -34,5 +34,18 @@ export default {
     developer: "Geliştirici",
     checkForUpdates: "Güncellemeleri Kontrol Et",
     general: "Genel",
-    security: "Güvenlik"
+    security: "Güvenlik",
+    dataManagement: "Veri Yönetimi",
+    backupData: "Verileri Yedekle",
+    restoreData: "Verileri Geri Yükle",
+    backupSuccess: "Yedek kopyalandı!",
+    restoreSuccess: "Veriler geri yüklendi!",
+    invalidData: "Geçersiz veri!",
+    enterJson: "Yedek JSON yapıştır",
+    sort: "Sırala",
+    filter: "Filtrele",
+    sortName: "İsim",
+    sortPrice: "Fiyat",
+    sortDate: "Tarih",
+    all: "Tümü"
 };

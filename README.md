@@ -14,7 +14,11 @@
 
 🔍 **Smart Management**
 - Track all your weekly, monthly, and yearly subscriptions in one beautiful dashboard.
-- **Multi-Currency Support**: 💱 Live exchange rates convert all costs to your preferred currency (USD, EUR, TRY, etc.).
+- **Multi-Currency Support**: 💱 Live exchange rates convert all costs to your preferred currency (USD, EUR, TRY, JPY, GBP, CNY, etc.).
+- **Sorting & Filtering**: 📂 Filter subscriptions by category and sort by Name, Price, or Date.
+
+💾 **Data Safety**
+- **Backup & Restore**: ☁️ Export your data as JSON and restore it anytime. Never lose your subscription list.
 
 ⏰ **Never Miss a Deadline**
 - **Free Trial Tracking**: Mark subscriptions as free trials.
@@ -26,7 +30,7 @@
 
 🎨 **Premium Design**
 - **Midnight Minimalist UI**: A sleek, dark-themed interface that's easy on the eyes.
-- **Instant Localization**: Switch languages (EN, TR, DE, ES, FR) instantly without restarting. 🌍
+- **Expanded Localization**: 🌍 Supports **13 Languages** (English, Turkish, German, Spanish, French, Italian, Portuguese, Russian, Chinese, Japanese, Korean, Arabic, Hindi).
 
 ---
 

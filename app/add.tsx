@@ -158,7 +158,7 @@ export default function AddSubscription() {
                             <Text className="text-white text-lg font-bold text-center">{i18n.t('selectCurrency')}</Text>
                         </View>
                         <ScrollView className="max-h-80">
-                            {['$', '€', '£', '₺', '¥', 'CN¥'].map((curr) => (
+                            {['$', '€', '£', '₺', '¥', 'CN¥', 'A$', 'C$', 'Fr', 'HK$', 'NZ$', 'kr', '₩', 'S$', '₹', '₽', 'R$', 'R'].map((curr) => (
                                 <TouchableOpacity
                                     key={curr}
                                     onPress={() => {

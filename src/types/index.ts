@@ -16,9 +16,13 @@ export interface Subscription {
     notificationIds?: string[];
 }
 
+export type SortOption = 'name' | 'price' | 'date';
+
 export interface UserPreferences {
     currency: string;
     language: string;
     isBiometricEnabled: boolean;
     hasCompletedOnboarding: boolean;
+    sortOption: SortOption;
+    filterCategory: Category | 'All';
 }

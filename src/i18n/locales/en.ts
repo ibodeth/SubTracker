@@ -34,5 +34,18 @@ export default {
     developer: "Developer",
     checkForUpdates: "Check for Updates",
     general: "General",
-    security: "Security"
+    security: "Security",
+    dataManagement: "Data Management",
+    backupData: "Backup Data",
+    restoreData: "Restore Data",
+    backupSuccess: "Backup copied!",
+    restoreSuccess: "Data restored!",
+    invalidData: "Invalid data!",
+    enterJson: "Paste backup JSON",
+    sort: "Sort",
+    filter: "Filter",
+    sortName: "Name",
+    sortPrice: "Price",
+    sortDate: "Start Date",
+    all: "All"
 };

@@ -39,8 +39,8 @@ export const AnalyticsChart = () => {
         const userCode = symbolToCode[userCurrency] || 'USD';
 
         if (subCode !== userCode) {
-            const rateSub = exchangeRates[subCode] || 1;
-            const rateUser = exchangeRates[userCode] || 1;
+            const rateSub = (exchangeRates && exchangeRates[subCode]) || 1;
+            const rateUser = (exchangeRates && exchangeRates[userCode]) || 1;
             monthlyCost = (monthlyCost / rateSub) * rateUser;
         }
 

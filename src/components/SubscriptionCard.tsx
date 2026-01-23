@@ -28,8 +28,8 @@ export const SubscriptionCard: React.FC<Props> = ({ subscription, onDelete }) =>
         const subCode = symbolToCode[subscription.currency] || 'USD';
         const userCode = symbolToCode[userCurrency] || 'USD';
 
-        const rateSub = exchangeRates[subCode] || 1;
-        const rateUser = exchangeRates[userCode] || 1;
+        const rateSub = (exchangeRates && exchangeRates[subCode]) || 1;
+        const rateUser = (exchangeRates && exchangeRates[userCode]) || 1;
 
         const converted = (subscription.price / rateSub) * rateUser;
 
